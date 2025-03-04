@@ -22,14 +22,16 @@ def generate_launch_description():
             output='screen',
             parameters=[
                 {'wheelDiameter': -0.38},
-                {'axesLength': -0.38}
+                {'axesLength': -0.38},
+                {'use_sim_time': False}
             ]
         ),
         Node(
             package='base',
             executable='angle2tf',
             name='angle2tf',
-            output='screen'
+            output='screen',
+            parameters=[{'use_sim_time': False}]
         ),
         # tf2 static_transform_publisher Knoten
         Node(
@@ -37,35 +39,40 @@ def generate_launch_description():
             executable='static_transform_publisher',
             name='AxesFront2JointFront',
             output='screen',
-            arguments=[LaunchConfiguration('frontLength'), '0', '0', '0', '0', '0', '1', 'axesFront', 'jointFront']
+            arguments=[LaunchConfiguration('frontLength'), '0', '0', '0', '0', '0', '1', 'axesFront', 'jointFront'],
+            parameters=[{'use_sim_time': False}]
         ),
         Node(
             package='tf2_ros',
             executable='static_transform_publisher',
             name='AxesRear2JointRear',
             output='screen',
-            arguments=[LaunchConfiguration('rearLength'), '0', '0', '0', '0', '0', '1', 'jointRear', 'axesRear']
+            arguments=[LaunchConfiguration('rearLength'), '0', '0', '0', '0', '0', '1', 'jointRear', 'axesRear'],
+            parameters=[{'use_sim_time': False}]
         ),
         Node(
             package='tf2_ros',
             executable='static_transform_publisher',
             name='Front',
             output='screen',
-            arguments=['0', '0', '0', '0', '0', '0', '1', 'base_link', 'axesFront']
+            arguments=['0', '0', '0', '0', '0', '0', '1', 'base_link', 'axesFront'],
+            parameters=[{'use_sim_time': False}]
         ),
         Node(
             package='tf2_ros',
             executable='static_transform_publisher',
             name='AxesFront2LaserFront',
             output='screen',
-            arguments=[LaunchConfiguration('frontLaserLength'), '0', '0', '0', '0', '0', '1', 'axesFront', 'laserFront']
+            arguments=[LaunchConfiguration('frontLaserLength'), '0', '0', '0', '0', '0', '1', 'axesFront', 'laserFront'],
+            parameters=[{'use_sim_time': False}]
         ),
         Node(
             package='tf2_ros',
             executable='static_transform_publisher',
             name='AxesRear2LaserRear',
             output='screen',
-            arguments=[LaunchConfiguration('rearLaserLength'), '0', '0', '0', '0', '0', '1', 'axesRear', 'laserRear']
+            arguments=[LaunchConfiguration('rearLaserLength'), '0', '0', '0', '0', '0', '1', 'axesRear', 'laserRear'],
+            parameters=[{'use_sim_time': False}]
         ),
     ])
 

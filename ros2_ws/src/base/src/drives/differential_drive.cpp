@@ -27,7 +27,7 @@ namespace kinematics
         WheelSpeed_.leftWheel = 0.0;
         WheelSpeed_.rightWheel = 0.0;
 
-        rclcpp::Clock clock;
+        rclcpp::Clock clock(RCL_SYSTEM_TIME);
         TimeStamp_ = clock.now();
     }
 
@@ -46,6 +46,7 @@ namespace kinematics
     // ----------------------
     geometry_msgs::msg::Pose2D differentialDrive::forwardKinematics(DifferentialWheelSpeed WheelSpeed, rclcpp::Time Timestamp)
     {
+     
         double deltaTime = (Timestamp - TimeStamp_).seconds();
         TimeStamp_ = Timestamp;
 
@@ -59,7 +60,7 @@ namespace kinematics
 
         return Pose_;
     }
-
+    
     // Inverse Kinematic
     // ----------------------
     kinematics::DifferentialWheelSpeed differentialDrive::inverseKinematics(geometry_msgs::msg::Twist cmdVelMsg)

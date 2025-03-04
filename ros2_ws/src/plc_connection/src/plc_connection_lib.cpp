@@ -248,8 +248,12 @@ void PlcConnectionNode::PublishData()
     TfAngleMsg.header.frame_id = "jointFront";
 
     // Setze die Zeitstempel für die Geschwindigkeits- und Winkel-Nachrichten
-    SpeedMsg.header.stamp = this->get_clock()->now();
+    
+    //SpeedMsg.header.stamp = this->get_clock()->now();
+    rclcpp::Clock clock(RCL_SYSTEM_TIME);
+    SpeedMsg.header.stamp = clock.now();
     AngleMsg.header.stamp = this->get_clock()->now();
+
 
     // Setze die Transformation basierend auf dem berechneten Winkel
     q.setRPY(0, 0, Angle);

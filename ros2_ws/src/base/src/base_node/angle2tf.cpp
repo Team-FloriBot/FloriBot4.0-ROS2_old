@@ -19,7 +19,7 @@ public:
 
         // Subscriber für joint_states erstellen
         AngleSubs_ = this->create_subscription<sensor_msgs::msg::JointState>(
-            "/floribot/joint_states", 10, std::bind(&Angle2TFNode::AngleCallback, this, std::placeholders::_1));
+            "/sensors/bodyAngle", 10, std::bind(&Angle2TFNode::AngleCallback, this, std::placeholders::_1));
     }
 
 private:
@@ -57,7 +57,7 @@ private:
             Wheels_actual_.rear_left = msg->velocity[3];
             Wheels_actual_.rear_right = msg->velocity[4];
 
-            ActualSpeed_->publish(Wheels_actual_);
+            //ActualSpeed_->publish(Wheels_actual_);
         }
     }
 
