@@ -42,7 +42,7 @@ void KinematicsPublisher::PublishSpeed()
     tmp.front_left = Speedmsg_.front_left;
     tmp.front_right = Speedmsg_.front_right;
     tmp.rear_left = Speedmsg_.rear_left;
-    tmp.rear_left = Speedmsg_.rear_right;
+    tmp.rear_right = Speedmsg_.rear_right;
 
     SpeedPublisher_->publish(Speedmsg_);
 
