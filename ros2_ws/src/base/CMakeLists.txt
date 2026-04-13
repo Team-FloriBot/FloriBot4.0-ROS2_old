@@ -49,9 +49,6 @@ ament_export_dependencies(rosidl_default_runtime)
 ament_export_include_directories(include)
 ament_export_include_directories(${CMAKE_BINARY_DIR}/rosidl_generator_cpp)
 
-add_library(differential_drive
-  src/drives/differential_drive.cpp
-)
 
 add_library(articulated_drive
   src/drives/articulated_drive.cpp

@@ -18,7 +18,7 @@ KinematicsPublisher::KinematicsPublisher(kinematics::coordinate Base)
     // Parameter erhalten
     getParam();
     // Drive Parameter setzen
-    Drive_.setParam(AxesLength_, WheelDiameter_, Base);
+    Drive_.setParam(AxesLength_, WheelDiameter_);
     // Publisher und Subscriber erstellen
     createPublisherSubscriber();
     // tf Broadcaster erstellen

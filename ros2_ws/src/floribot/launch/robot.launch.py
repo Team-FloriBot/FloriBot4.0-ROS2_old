@@ -14,7 +14,7 @@ def generate_launch_description():
                 get_package_share_directory('base'), 'launch'),
                 '/base_node.launch.py'])
         ),
-<<<<<<< HEAD
+
 #        """
 #        IncludeLaunchDescription(
 #            PythonLaunchDescriptionSource([os.path.join(

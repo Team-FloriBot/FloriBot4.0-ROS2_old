@@ -25,7 +25,7 @@ private:
     void CmdVelCallback(const geometry_msgs::msg::Twist::SharedPtr msg);  
     void SpeedCallback(const base::msg::Wheels::SharedPtr msg);  
 
-    kinematics::ArticulatedDrive Drive_;
+    ArticulatedDrive Drive_;
     base::msg::Wheels Speedmsg_;
     
     rclcpp::TimerBase::SharedPtr CmdVelTimer_; 
