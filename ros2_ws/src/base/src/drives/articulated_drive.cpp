@@ -81,8 +81,8 @@ geometry_msgs::msg::Pose2D ArticulatedDrive::forwardKinematics(articulatedWheelS
 void ArticulatedDrive::setParam(double AxesLength, double WheelDiameter)
 {
         reset();
-        axesLength_ = axesLength;
-        wheelDiameter_ = wheelDiameter;
+        axesLength_ = AxesLength;
+        wheelDiameter_ = WheelDiameter;
         wheelRadius_ = wheelDiameter_ / 2.0;
         wheelCircumference_ = 2.0 * M_PI * wheelDiameter_ / 2.0;
 }
