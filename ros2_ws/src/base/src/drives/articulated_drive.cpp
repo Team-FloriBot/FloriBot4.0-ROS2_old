@@ -42,14 +42,14 @@ articulatedWheelSpeed ArticulatedDrive::inverseKinematics(geometry_msgs::msg::Tw
     {
         retVal.Front.leftWheel = 1/wheelRadius_ * targetSpeed_ - (wheelDiameter_/(2*wheelRadius_))* targetOmega_;
         retVal.Front.rightWheel = 1/wheelRadius_ * targetSpeed_ + (wheelDiameter_/(2*wheelRadius_))* targetOmega_;
-        retVal.Rear.leftWheel = (cos(angle_)/wheelRadius_ - (wheelDiameter_ * sin(angle))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle_) / (2*wheelRadius_))+ (wheelDiameter * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
-        retVal.Rear.rightWheel= (cos(angle_)/wheelRadius_ + (wheelDiameter_ * sin(angle))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle_) / (2*wheelRadius_))- (wheelDiameter * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
+        retVal.Rear.leftWheel = (cos(angle_)/wheelRadius_ - (wheelDiameter_ * sin(angle_))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle_) / (2*wheelRadius_))+ (wheelDiameter * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
+        retVal.Rear.rightWheel= (cos(angle_)/wheelRadius_ + (wheelDiameter_ * sin(angle_))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle_) / (2*wheelRadius_))- (wheelDiameter * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
     }
 
     else
     {
-        retVal.Front.leftWheel = (cos(angle_)/wheelRadius_ + (wheelDiameter_ * sin(angle))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle_) / (2*wheelRadius_))- (wheelDiameter * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
-        retVal.Front.rightWheel= (cos(angle_)/wheelRadius_ - (wheelDiameter_ * sin(angle))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle_) / (2*wheelRadius_))+ (wheelDiameter * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
+        retVal.Front.leftWheel = (cos(angle_)/wheelRadius_ + (wheelDiameter_ * sin(angle_))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle_) / (2*wheelRadius_))- (wheelDiameter * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
+        retVal.Front.rightWheel= (cos(angle_)/wheelRadius_ - (wheelDiameter_ * sin(angle_))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle_) / (2*wheelRadius_))+ (wheelDiameter * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
         retVal.Rear.leftWheel = 1/wheelRadius_ * targetSpeed_ + (wheelDiameter_/(2*wheelRadius_))* targetOmega_;
         retVal.Rear.rightWheel = 1/wheelRadius_ * targetSpeed_ - (wheelDiameter_/(2*wheelRadius_))* targetOmega_;
     }
