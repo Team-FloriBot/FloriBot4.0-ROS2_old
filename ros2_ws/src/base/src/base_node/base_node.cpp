@@ -7,7 +7,7 @@ int main(int argc, char** argv)
 {
     rclcpp::init(argc, argv);
     // Erstellen des Knoten
-    auto node = std::make_shared<KinematicsPublisher>(kinematics::coordinate::Front);
+    auto node = std::make_shared<KinematicsPublisher>();
     std::atexit(ExitFcn);
     
     try
