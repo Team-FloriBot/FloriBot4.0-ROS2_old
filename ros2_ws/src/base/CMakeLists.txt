@@ -62,28 +62,21 @@ add_executable(${PROJECT_NAME}_node src/${PROJECT_NAME}_node/${PROJECT_NAME}_nod
 add_executable(angle2tf src/${PROJECT_NAME}_node/angle2tf.cpp)
 
 
-target_link_libraries(differential_drive
-  rclcpp::rclcpp
-  tf2_ros::tf2_ros
-  )
 
 target_link_libraries(articulated_drive
   rclcpp::rclcpp
   tf2_ros::tf2_ros
-  differential_drive
   )
 
 target_link_libraries(basePublisher
   rclcpp::rclcpp
   tf2_ros::tf2_ros
-  differential_drive
   articulated_drive
   )
 
 target_link_libraries(${PROJECT_NAME}_node
   rclcpp::rclcpp
   tf2_ros::tf2_ros
-  differential_drive
   articulated_drive
   basePublisher
   )
@@ -91,7 +84,6 @@ target_link_libraries(${PROJECT_NAME}_node
 target_link_libraries(angle2tf
   rclcpp::rclcpp
   tf2_ros::tf2_ros
-  differential_drive
   articulated_drive
   basePublisher
 )
@@ -100,8 +92,6 @@ ament_target_dependencies(${PROJECT_NAME}_node rclcpp tf2_ros std_msgs geometry_
 ament_target_dependencies(angle2tf rclcpp tf2_ros std_msgs geometry_msgs nav_msgs sensor_msgs Eigen3)
 
 
-rosidl_target_interfaces(differential_drive
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
 rosidl_target_interfaces(articulated_drive
   ${PROJECT_NAME} "rosidl_typesupport_cpp")
 rosidl_target_interfaces(basePublisher
@@ -110,7 +100,6 @@ rosidl_target_interfaces(base_node
   ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 install(TARGETS
-  differential_drive
   articulated_drive
   basePublisher
   ${PROJECT_NAME}_node

@@ -7,8 +7,8 @@ from launch.conditions import IfCondition
 def generate_launch_description():
     # Argumente definieren
     return LaunchDescription([
-        DeclareLaunchArgument('frontLength', default_value='-0.38'),
-        DeclareLaunchArgument('rearLength', default_value='-0.38'),
+        DeclareLaunchArgument('frontLength', default_value='0.38'),
+        DeclareLaunchArgument('rearLength', default_value='0.38'),
         DeclareLaunchArgument('wheelDiameter', default_value='0.280'),
         DeclareLaunchArgument('axesLength', default_value='0.335'),
         DeclareLaunchArgument('frontLaserLength', default_value='0.387'),

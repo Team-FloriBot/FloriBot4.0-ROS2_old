@@ -40,18 +40,18 @@ articulatedWheelSpeed ArticulatedDrive::inverseKinematics(geometry_msgs::msg::Tw
 
     if (targetSpeed_ >= 0)
     {
-        retVal.Front.leftWheel = 1/wheelRadius_ * targetSpeed_ - (wheelDiameter/(2*wheelRadius_))* targetOmega_;
-        retVal.Front.rightWheel = 1/wheelRadius_ * targetSpeed_ + (wheelDiameter/(2*wheelRadius_))* targetOmega_;
-        retVal.Rear.leftWheel = (cos(angle_)/wheelRadius_ - (wheelDiameter * sin(angle))/(axesLength * wheelRadius_)) * targetSpeed_ + ((axesLength*sin(angle_) / (2*wheelRadius_))+ (wheelDiameter * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
-        retVal.Rear.rightWheel= (cos(angle_)/wheelRadius_ + (wheelDiameter * sin(angle))/(axesLength * wheelRadius_)) * targetSpeed_ + ((axesLength*sin(angle_) / (2*wheelRadius_))- (wheelDiameter * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
+        retVal.Front.leftWheel = 1/wheelRadius_ * targetSpeed_ - (wheelDiameter_/(2*wheelRadius_))* targetOmega_;
+        retVal.Front.rightWheel = 1/wheelRadius_ * targetSpeed_ + (wheelDiameter_/(2*wheelRadius_))* targetOmega_;
+        retVal.Rear.leftWheel = (cos(angle_)/wheelRadius_ - (wheelDiameter_ * sin(angle))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle_) / (2*wheelRadius_))+ (wheelDiameter * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
+        retVal.Rear.rightWheel= (cos(angle_)/wheelRadius_ + (wheelDiameter_ * sin(angle))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle_) / (2*wheelRadius_))- (wheelDiameter * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
     }
 
     else
     {
-        retVal.Front.leftWheel = (cos(angle_)/wheelRadius_ + (wheelDiameter * sin(angle))/(axesLength * wheelRadius_)) * targetSpeed_ + ((axesLength*sin(angle_) / (2*wheelRadius_))- (wheelDiameter * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
-        retVal.Front.rightWheel= (cos(angle_)/wheelRadius_ - (wheelDiameter * sin(angle))/(axesLength * wheelRadius_)) * targetSpeed_ + ((axesLength*sin(angle_) / (2*wheelRadius_))+ (wheelDiameter * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
-        retVal.Rear.leftWheel = 1/wheelRadius_ * targetSpeed_ + (wheelDiameter/(2*wheelRadius_))* targetOmega_;
-        retVal.Rear.rightWheel = 1/wheelRadius_ * targetSpeed_ - (wheelDiameter/(2*wheelRadius_))* targetOmega_;
+        retVal.Front.leftWheel = (cos(angle_)/wheelRadius_ + (wheelDiameter_ * sin(angle))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle_) / (2*wheelRadius_))- (wheelDiameter * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
+        retVal.Front.rightWheel= (cos(angle_)/wheelRadius_ - (wheelDiameter_ * sin(angle))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle_) / (2*wheelRadius_))+ (wheelDiameter * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
+        retVal.Rear.leftWheel = 1/wheelRadius_ * targetSpeed_ + (wheelDiameter_/(2*wheelRadius_))* targetOmega_;
+        retVal.Rear.rightWheel = 1/wheelRadius_ * targetSpeed_ - (wheelDiameter_/(2*wheelRadius_))* targetOmega_;
     }
 
 
@@ -78,7 +78,7 @@ geometry_msgs::msg::Pose2D ArticulatedDrive::forwardKinematics(articulatedWheelS
 
 // Parameter setzen
 // ----------------------
-void ArticulatedDrive::setParam(double AxesLength, double WheelDiameter, coordinate Base)
+void ArticulatedDrive::setParam(double AxesLength, double WheelDiameter)
 {
         reset();
         axesLength_ = axesLength;
@@ -116,35 +116,21 @@ geometry_msgs::msg::Twist ArticulatedDrive::getSpeed()
 
 // Winkel des Knickgelenks auslesen
 
-double getJointAngle()
+double ArticulatedDrive::getJointAngle() 
 {
-    geometry_msgs::msg::TransformStamped transform;
-
-    try
-    {
-        transform = tf_buffer_->lookupTransform(
-            "jointFront",   // Ziel-Frame
-            "jointRear",    // Quell-Frame
-            tf2::TimePointZero
-        );
+    try {
+        // Hier sicherstellen, dass tf_buffer_ valide ist
+        auto transform = tf_buffer_->lookupTransform("jointFront", "jointRear", tf2::TimePointZero);
+        tf2::Quaternion q(
+            transform.transform.rotation.x,
+            transform.transform.rotation.y,
+            transform.transform.rotation.z,
+            transform.transform.rotation.w);
+        double roll, pitch, yaw;
+        tf2::Matrix3x3(q).getRPY(roll, pitch, yaw);
+        return yaw;
+    } catch (tf2::TransformException &ex) {
+        // Nicht bei jedem Loop loggen, das frisst Performance
+        return 0.0; 
     }
-    catch (tf2::TransformException &ex)
-    {
-        RCLCPP_WARN(this->get_logger(), "TF error: %s", ex.what());
-        return 0.0;
-    }
-
-    // Quaternion extrahieren
-    tf2::Quaternion q(
-        transform.transform.rotation.x,
-        transform.transform.rotation.y,
-        transform.transform.rotation.z,
-        transform.transform.rotation.w
-    );
-
-    // In Eulerwinkel umwandeln
-    double roll, pitch, yaw;
-    tf2::Matrix3x3(q).getRPY(roll, pitch, yaw);
-
-    return yaw;  // Knickwinkel in rad
 }

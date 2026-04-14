@@ -15,7 +15,7 @@
 class KinematicsPublisher : public rclcpp::Node  
 {
 public:
-    KinematicsPublisher(kinematics::coordinate Base);
+    KinematicsPublisher();
     ~KinematicsPublisher();
 
 private:

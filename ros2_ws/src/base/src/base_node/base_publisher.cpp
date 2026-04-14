@@ -12,7 +12,7 @@
 
 // Klassendefinition des Kinematics Node
 
-KinematicsPublisher::KinematicsPublisher(kinematics::coordinate Base)
+KinematicsPublisher::KinematicsPublisher()
 : Node("Kinematics")
 {
     // Parameter erhalten
@@ -56,8 +56,8 @@ void KinematicsPublisher::PublishSpeed()
 // ---------------------------
 void KinematicsPublisher::getParam()
 {
-    this->get_parameter_or("axesLength", AxesLength_, 0.4);
-    this->get_parameter_or("wheelDiameter", WheelDiameter_, 0.4);
+    this->declare_parameter("axesLength", 0.4);
+    this->declare_parameter("wheelDiameter", 0.4);
 }
 
 // Publisher und Subscriber erstellen
@@ -81,7 +81,7 @@ void KinematicsPublisher::createPublisherSubscriber()
 // Berechnet Speed der Räder aus cmd_vel topic
 void KinematicsPublisher::CmdVelCallback(const geometry_msgs::msg::Twist::SharedPtr msg)
 {
-    kinematics::articulatedWheelSpeed Wheelspeed;
+    articulatedWheelSpeed Wheelspeed;
     // Berechnung der Wheelspeed über die Inverse (siehe articulated_drive.cpp)
     Wheelspeed = Drive_.inverseKinematics(*msg);
 
@@ -97,7 +97,7 @@ void KinematicsPublisher::CmdVelCallback(const geometry_msgs::msg::Twist::Shared
 // Berechnet Odometry und Transformationsmatrix aus aktuellen Rad Speed
 void KinematicsPublisher::SpeedCallback(const base::msg::Wheels::SharedPtr msg)
 {
-    kinematics::articulatedWheelSpeed ActualSpeed;
+    articulatedWheelSpeed ActualSpeed;
     geometry_msgs::msg::Pose2D OdomPose;
     geometry_msgs::msg::TransformStamped Transform;
     nav_msgs::msg::Odometry OdomMsg;
