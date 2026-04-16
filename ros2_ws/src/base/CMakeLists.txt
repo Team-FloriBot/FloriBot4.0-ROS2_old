@@ -72,22 +72,26 @@ rosidl_target_interfaces(basePublisher ${PROJECT_NAME} "rosidl_typesupport_cpp")
 rosidl_target_interfaces(${PROJECT_NAME}_node ${PROJECT_NAME} "rosidl_typesupport_cpp")
 rosidl_target_interfaces(angle2tf ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
-# 6. Export für andere Pakete
+# --- 6. Export für andere Pakete (wie plc_connection) ---
+# Wir exportieren die Bibliotheken und die Runtime für die Messages
 ament_export_dependencies(rosidl_default_runtime)
 ament_export_include_directories(include)
-ament_export_targets(articulated_drive basePublisher HAS_LIBRARY_TARGET)
+ament_export_libraries(articulated_drive basePublisher)
 
-# 7. Installation
+# --- 7. Installation ---
+# Bibliotheken installieren
 install(TARGETS articulated_drive basePublisher
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
 )
 
+# Nodes installieren
 install(TARGETS ${PROJECT_NAME}_node angle2tf
   DESTINATION lib/${PROJECT_NAME}
 )
 
+# Verzeichnisse und Dateien
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 install(FILES 
   mapping_rule_Angle.yaml 
