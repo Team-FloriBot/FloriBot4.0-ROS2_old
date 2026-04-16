@@ -38,7 +38,7 @@ private:
     rclcpp::Subscription<base::msg::Angle>::SharedPtr AngleSubs_;
 
     std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadaster_;
-    double AxesLength_, WheelDiameter_;
+    double AxesLength_, WheelDiameter_, frontLength_, rearLength_;
     double angle_;
     
 };

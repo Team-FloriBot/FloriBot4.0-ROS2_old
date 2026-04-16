@@ -33,7 +33,7 @@ class ArticulatedDrive
         geometry_msgs::msg::Pose2D getActualPose();
         geometry_msgs::msg::Twist getSpeed();
         void reset();
-        void setParam(double AxesLength, double WheelDiameter);
+        void setParam(double AxesLength, double WheelDiameter, double frontLength, double rearLength);
         
     private:
         std::shared_ptr<rclcpp::Clock> clock_;
@@ -41,7 +41,8 @@ class ArticulatedDrive
         DifferentialWheelSpeed WheelSpeed_;
         geometry_msgs::msg::Twist Speed_;
         rclcpp::Time TimeStamp_;
-        double axesLength_, wheelDiameter_, wheelCircumference_, wheelRadius_;
+        double axesLength_, wheelDiameter_, wheelCircumference_, wheelRadius_, frontLength_, rearLength_;
+, ;
         double targetSpeed_, targetOmega_;
         
 };

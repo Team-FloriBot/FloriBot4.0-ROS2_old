@@ -18,7 +18,7 @@ KinematicsPublisher::KinematicsPublisher()
     // Parameter erhalten
     getParam();
     // Drive Parameter setzen
-    Drive_.setParam(AxesLength_, WheelDiameter_);
+    Drive_.setParam(axesLength_, wheelDiameter_, frontLength_, rearLength_);
     // Publisher und Subscriber erstellen
     createPublisherSubscriber();
     // tf Broadcaster erstellen
@@ -55,10 +55,16 @@ void KinematicsPublisher::PublishSpeed()
 
 // Parameter einlesen
 // ---------------------------
-void KinematicsPublisher::getParam()
-{
-    this->declare_parameter("AxesLength_", 0.4);
-    this->declare_parameter("WheelDiameter_", 0.4);
+void KinematicsPublisher::getParam() {
+    this->declare_parameter("axesLength", 0.335);
+    this->declare_parameter("wheelDiameter", 0.28);
+    this->declare_parameter("frontLength", 0.38);
+    this->declare_parameter("rearLength", 0.38);
+
+    this->get_parameter("axesLength", axesLength_);
+    this->get_parameter("wheelDiameter", wheelDiameter_);
+    this->get_parameter("frontLength", frontLength_);
+    this->get_parameter("rearLength", rearLength_);
 }
 
 // Publisher und Subscriber erstellen
@@ -125,7 +131,7 @@ void KinematicsPublisher::SpeedCallback(const base::msg::Wheels::SharedPtr msg)
 
     Transform.transform.translation.x = OdomPose.x;
     Transform.transform.translation.y = OdomPose.y;
-    Transform.transform.translation.z = WheelDiameter_ / 2;
+    Transform.transform.translation.z = wheelDiameter_ / 2;
 
     Transform.transform.rotation.w = q.getW();
     Transform.transform.rotation.x = q.getX();
@@ -145,7 +151,7 @@ void KinematicsPublisher::SpeedCallback(const base::msg::Wheels::SharedPtr msg)
 
     OdomMsg.pose.pose.position.x = OdomPose.x;
     OdomMsg.pose.pose.position.y = OdomPose.y;
-    OdomMsg.pose.pose.position.z = WheelDiameter_ / 2;
+    OdomMsg.pose.pose.position.z = wheelDiameter_ / 2;
 
     // According to http://wiki.ros.org/navigation/Tutorials/RobotSetup/Odom the speed has to be in the child_frame
     // in our case base_link which means the robot itself
