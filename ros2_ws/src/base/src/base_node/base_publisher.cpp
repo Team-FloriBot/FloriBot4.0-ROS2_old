@@ -57,8 +57,8 @@ void KinematicsPublisher::PublishSpeed()
 // ---------------------------
 void KinematicsPublisher::getParam()
 {
-    this->declare_parameter("axesLength", 0.4);
-    this->declare_parameter("wheelDiameter", 0.4);
+    this->declare_parameter("AxesLength_", 0.4);
+    this->declare_parameter("WheelDiameter_", 0.4);
 }
 
 // Publisher und Subscriber erstellen
