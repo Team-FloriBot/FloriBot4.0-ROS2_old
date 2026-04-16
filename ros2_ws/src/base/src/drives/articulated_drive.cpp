@@ -33,12 +33,14 @@ articulatedWheelSpeed ArticulatedDrive::inverseKinematics(geometry_msgs::msg::Tw
     targetSpeed_ = cmdVelMsg.linear.x;
     targetOmega_ = cmdVelMsg.angular.z;
 
+    // winkel muss invertiert werdem
+
     if (targetSpeed_ >= 0)
     {
         retVal.Front.leftWheel  = (1/wheelRadius_) * targetSpeed_ - (axesLength_/(2*wheelRadius_))* targetOmega_;
         retVal.Front.rightWheel = (1/wheelRadius_) * targetSpeed_ + (axesLength_/(2*wheelRadius_))* targetOmega_;
-        retVal.Rear.leftWheel = (cos(angle)/wheelRadius_ - (axesLength_ * sin(angle))/(frontLength_ * wheelRadius_)) * targetSpeed_ + ((frontLength_*sin(angle) / (2*wheelRadius_))- (axesLength_ * cos(angle))/(2*wheelRadius_)) * targetOmega_;
-        retVal.Rear.rightWheel= (cos(angle)/wheelRadius_ + (axesLength_ * sin(angle))/(frontLength_ * wheelRadius_)) * targetSpeed_ + ((frontLength_*sin(angle) / (2*wheelRadius_))+ (axesLength_ * cos(angle))/(2*wheelRadius_)) * targetOmega_;
+        retVal.Rear.leftWheel = (cos(angle)/wheelRadius_ + (axesLength_ * sin(angle))/(frontLength_ * wheelRadius_)) * targetSpeed_ + ((-1* frontLength_*sin(angle) / (2*wheelRadius_))- (axesLength_ * cos(angle))/(2*wheelRadius_)) * targetOmega_;
+        retVal.Rear.rightWheel= (cos(angle)/wheelRadius_ - (axesLength_ * sin(angle))/(frontLength_ * wheelRadius_)) * targetSpeed_ + ((-1* frontLength_*sin(angle) / (2*wheelRadius_))+ (axesLength_ * cos(angle))/(2*wheelRadius_)) * targetOmega_;
     }
 
     else
