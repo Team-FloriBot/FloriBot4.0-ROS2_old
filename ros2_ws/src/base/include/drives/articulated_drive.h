@@ -8,8 +8,6 @@
 #include <geometry_msgs/msg/pose2_d.hpp>
 #include <geometry_msgs/msg/transform_stamped.hpp>
 #include <tf2/LinearMath/Quaternion.h>
-#include <tf2_ros/transform_listener.h>
-#include <tf2_ros/buffer.h>
 
 struct DifferentialWheelSpeed
 {
@@ -30,25 +28,21 @@ class ArticulatedDrive
         ArticulatedDrive(double axesLength, double wheelDiameter);
         ~ArticulatedDrive();
 
-        articulatedWheelSpeed inverseKinematics(geometry_msgs::msg::Twist cmdVelMsg);
+        articulatedWheelSpeed inverseKinematics(geometry_msgs::msg::Twist cmdVelMsg, double angle);
         geometry_msgs::msg::Pose2D forwardKinematics(articulatedWheelSpeed WheelSpeed, rclcpp::Time Timestamp);
         geometry_msgs::msg::Pose2D getActualPose();
         geometry_msgs::msg::Twist getSpeed();
         void reset();
         void setParam(double AxesLength, double WheelDiameter);
-        double getJointAngle();
         
     private:
         std::shared_ptr<rclcpp::Clock> clock_;
-        std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
-        std::shared_ptr<tf2_ros::TransformListener> tf_listener_{nullptr};
-        geometry_msgs::msg::Pose2D Pose_;
+        geometry_msgs::msg::Pose2D Pose_{};
         DifferentialWheelSpeed WheelSpeed_;
         geometry_msgs::msg::Twist Speed_;
         rclcpp::Time TimeStamp_;
         double axesLength_, wheelDiameter_, wheelCircumference_, wheelRadius_;
         double targetSpeed_, targetOmega_;
-        double angle_;
         
 };
 

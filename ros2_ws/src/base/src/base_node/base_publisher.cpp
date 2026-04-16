@@ -13,7 +13,7 @@
 // Klassendefinition des Kinematics Node
 
 KinematicsPublisher::KinematicsPublisher()
-: Node("Kinematics")
+: Node("Kinematics"), angle_(0.0)
 {
     // Parameter erhalten
     getParam();
@@ -25,6 +25,7 @@ KinematicsPublisher::KinematicsPublisher()
     tf_broadaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
     // Timer für PublishSpped Publisher
     CmdVelTimer_ = this->create_wall_timer(std::chrono::milliseconds(100), std::bind(&KinematicsPublisher::PublishSpeed, this));
+
 
 }
 
@@ -74,6 +75,9 @@ void KinematicsPublisher::createPublisherSubscriber()
     // Speed Subscriber
     SpeedSubscriber_ = this->create_subscription<base::msg::Wheels>(
         "engine/actualSpeed", 1, std::bind(&KinematicsPublisher::SpeedCallback, this, std::placeholders::_1));
+    // Subscriber für joint_states erstellen
+    AngleSubs_ = this->create_subscription<sensor_msgs::msg::JointState>(
+    "/sensors/bodyAngle", 10, std::bind(&KinematicsPublisher::AngleCallback, this, std::placeholders::_1));
 }
 
 // CmdVel Subscriber
@@ -83,7 +87,7 @@ void KinematicsPublisher::CmdVelCallback(const geometry_msgs::msg::Twist::Shared
 {
     articulatedWheelSpeed Wheelspeed;
     // Berechnung der Wheelspeed über die Inverse (siehe articulated_drive.cpp)
-    Wheelspeed = Drive_.inverseKinematics(*msg);
+    Wheelspeed = Drive_.inverseKinematics(*msg, angle_);
 
     // Zusammenstellen der Nachricht für Speed Publisher
     Speedmsg_.front_left = Wheelspeed.Front.leftWheel;
@@ -154,3 +158,19 @@ void KinematicsPublisher::SpeedCallback(const base::msg::Wheels::SharedPtr msg)
     tf_broadaster_->sendTransform(Transform);
 }
 
+void KinematicsPublisher::AngleCallback(const sensor_msgs::msg::JointState::SharedPtr msg)
+{
+    if (!msg->position.empty())
+    {
+        // Quaternion aus der Gelenkposition berechnen (hier RPY)
+        angle_ = msg->position[0];
+    }
+}
+
+// Membervariablen
+rclcpp::Publisher<base::msg::Wheels>::SharedPtr ActualSpeed_;
+rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr AngleSubs_;
+std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadaster_;
+geometry_msgs::msg::TransformStamped TFAngleMsg_;
+base::msg::Wheels Wheels_actual_;
+};

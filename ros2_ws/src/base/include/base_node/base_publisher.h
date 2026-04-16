@@ -24,6 +24,7 @@ private:
     void PublishSpeed();  
     void CmdVelCallback(const geometry_msgs::msg::Twist::SharedPtr msg);  
     void SpeedCallback(const base::msg::Wheels::SharedPtr msg);  
+    void AngleCallback(const sensor_msgs::msg::JointState::SharedPtr msg);
 
     ArticulatedDrive Drive_;
     base::msg::Wheels Speedmsg_;
@@ -36,6 +37,7 @@ private:
 
     std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadaster_;
     double AxesLength_, WheelDiameter_;
+    double angle_;
     
 };
 

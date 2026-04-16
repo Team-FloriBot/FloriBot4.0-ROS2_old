@@ -1,7 +1,7 @@
 #include "drives/articulated_drive.h"
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp/time.hpp>
-#include <tf2_ros/transform_listener.h>
+
 #include <geometry_msgs/msg/twist.hpp>
 #include <geometry_msgs/msg/pose2_d.hpp>
 #include <base/msg/wheels.hpp>
@@ -13,15 +13,11 @@
 ArticulatedDrive::ArticulatedDrive()
 {
     clock_ = std::make_shared<rclcpp::Clock>(RCL_SYSTEM_TIME);
-    tf_buffer_ = std::make_unique<tf2_ros::Buffer>(clock_);
-    tf_listener_= std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 }
 ArticulatedDrive::ArticulatedDrive(double axesLength, double wheelDiameter)
 {
     setParam(axesLength, wheelDiameter);
     clock_ = std::make_shared<rclcpp::Clock>(RCL_SYSTEM_TIME);
-    tf_buffer_ = std::make_unique<tf2_ros::Buffer>(clock_);
-    tf_listener_= std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 }
 
 
@@ -29,27 +25,26 @@ ArticulatedDrive::~ArticulatedDrive() {}
 
 // Inverse Kinematic
 // ----------------------
-articulatedWheelSpeed ArticulatedDrive::inverseKinematics(geometry_msgs::msg::Twist cmdVelMsg)
+articulatedWheelSpeed ArticulatedDrive::inverseKinematics(geometry_msgs::msg::Twist cmdVelMsg, double angle)
 {
     articulatedWheelSpeed retVal;
 
     // calculate inverse kinematic by hand
     targetSpeed_ = cmdVelMsg.linear.x;
     targetOmega_ = cmdVelMsg.angular.z;
-    angle_ = getJointAngle();
 
     if (targetSpeed_ >= 0)
     {
         retVal.Front.leftWheel = 1/wheelRadius_ * targetSpeed_ - (wheelDiameter_/(2*wheelRadius_))* targetOmega_;
         retVal.Front.rightWheel = 1/wheelRadius_ * targetSpeed_ + (wheelDiameter_/(2*wheelRadius_))* targetOmega_;
-        retVal.Rear.leftWheel = (cos(angle_)/wheelRadius_ - (wheelDiameter_ * sin(angle_))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle_) / (2*wheelRadius_))+ (wheelDiameter_ * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
-        retVal.Rear.rightWheel= (cos(angle_)/wheelRadius_ + (wheelDiameter_ * sin(angle_))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle_) / (2*wheelRadius_))- (wheelDiameter_ * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
+        retVal.Rear.leftWheel = (cos(angle)/wheelRadius_ - (wheelDiameter_ * sin(angle))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle) / (2*wheelRadius_))+ (wheelDiameter_ * cos(angle))/(2*wheelRadius_)) * targetOmega_;
+        retVal.Rear.rightWheel= (cos(angle)/wheelRadius_ + (wheelDiameter_ * sin(angle))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle) / (2*wheelRadius_))- (wheelDiameter_ * cos(angle))/(2*wheelRadius_)) * targetOmega_;
     }
 
     else
     {
-        retVal.Front.leftWheel = (cos(angle_)/wheelRadius_ + (wheelDiameter_ * sin(angle_))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle_) / (2*wheelRadius_))- (wheelDiameter_ * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
-        retVal.Front.rightWheel= (cos(angle_)/wheelRadius_ - (wheelDiameter_ * sin(angle_))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle_) / (2*wheelRadius_))+ (wheelDiameter_ * cos(angle_))/(2*wheelRadius_)) * targetOmega_;
+        retVal.Front.leftWheel = (cos(angle)/wheelRadius_ + (wheelDiameter_ * sin(angle))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle) / (2*wheelRadius_))- (wheelDiameter_ * cos(angle))/(2*wheelRadius_)) * targetOmega_;
+        retVal.Front.rightWheel= (cos(angle)/wheelRadius_ - (wheelDiameter_ * sin(angle))/(axesLength_ * wheelRadius_)) * targetSpeed_ + ((axesLength_*sin(angle) / (2*wheelRadius_))+ (wheelDiameter_ * cos(angle))/(2*wheelRadius_)) * targetOmega_;
         retVal.Rear.leftWheel = 1/wheelRadius_ * targetSpeed_ + (wheelDiameter_/(2*wheelRadius_))* targetOmega_;
         retVal.Rear.rightWheel = 1/wheelRadius_ * targetSpeed_ - (wheelDiameter_/(2*wheelRadius_))* targetOmega_;
     }
@@ -112,25 +107,4 @@ geometry_msgs::msg::Pose2D ArticulatedDrive::getActualPose()
 geometry_msgs::msg::Twist ArticulatedDrive::getSpeed()
 {
     return Speed_;
-}
-
-// Winkel des Knickgelenks auslesen
-
-double ArticulatedDrive::getJointAngle() 
-{
-    try {
-        // Hier sicherstellen, dass tf_buffer_ valide ist
-        auto transform = tf_buffer_->lookupTransform("jointFront", "jointRear", tf2::TimePointZero);
-        tf2::Quaternion q(
-            transform.transform.rotation.x,
-            transform.transform.rotation.y,
-            transform.transform.rotation.z,
-            transform.transform.rotation.w);
-        double roll, pitch, yaw;
-        tf2::Matrix3x3(q).getRPY(roll, pitch, yaw);
-        return yaw;
-    } catch (tf2::TransformException &ex) {
-        // Nicht bei jedem Loop loggen, das frisst Performance
-        return 0.0; 
-    }
 }
