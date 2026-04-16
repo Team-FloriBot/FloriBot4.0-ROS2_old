@@ -1,19 +1,18 @@
 <?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>plc_connection</name>
   <version>0.0.0</version>
   <description>The plc_connection package</description>
 
-  <!-- Maintainer information -->
   <maintainer email="aaronstark1406@gmail.com">Aaron Stark</maintainer>
   <maintainer email="jorth@stud.hs-heilbronn.de">Jannis Orth</maintainer>
 
-  <!-- License information -->
   <license>TODO</license>
 
-  <!-- Dependencies -->
   <buildtool_depend>ament_cmake</buildtool_depend>
   <buildtool_depend>rosidl_default_generators</buildtool_depend>
+
   <depend>rclcpp</depend>
   <depend>std_msgs</depend>
   <depend>tf2</depend>
@@ -23,13 +22,10 @@
 
   <exec_depend>rosidl_default_runtime</exec_depend>
   <exec_depend>ros2launch</exec_depend>
+  
   <member_of_group>rosidl_interface_packages</member_of_group>
 
-  <!-- Export section (tools can request additional information here) -->
   <export>
     <build_type>ament_cmake</build_type>
-    <rosidl_generate_interfaces>
-      <file>srv/GetCount.srv</file>
-    </rosidl_generate_interfaces>
-  </export>
+    </export>
 </package>

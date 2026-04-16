@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.5)
 project(plc_connection)
 
-# Standardmäßig auf C++14 setzen
+# Standard auf C++17 (ROS2 Humble+ Standard)
 if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
+  set(CMAKE_CXX_STANDARD 17)
 endif()
 
-# Ament-Pakete und Abhängigkeiten finden
+# 1. Pakete finden
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(tf2 REQUIRED)
@@ -16,107 +16,70 @@ find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(base REQUIRED)
 
-# Dienstdateien hinzufügen
-rosidl_generate_interfaces(plc_connection
+# 2. Interfaces (Services) generieren
+rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/GetCount.srv"
   DEPENDENCIES std_msgs
 )
 
-# Include-Verzeichnisse
-include_directories(
-  include
-  ${rclcpp_INCLUDE_DIRS}
-  ${std_msgs_INCLUDE_DIRS}
-  ${geometry_msgs_INCLUDE_DIRS}
-  ${tf2_INCLUDE_DIRS}
-  ${tf2_ros_INCLUDE_DIRS}
-  ${base_INCLUDE_DIRS}
-  ${rosidl_default_generators_INCLUDE_DIRS}
-  ${CMAKE_BINARY_DIR}/rosidl_generator_cpp/${PROJECT_NAME}
-)
+# 3. Bibliotheken definieren
+# Strategie: Jedes Target bekommt seine eigenen Abhängigkeiten direkt zugewiesen
 
-# Abhängigkeiten und Include-Verzeichnisse exportieren
-ament_export_dependencies(rosidl_default_runtime)
-ament_export_include_directories(${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp)
-ament_export_include_directories(include)
+# --- Library: socket ---
+add_library(socket src/network/socket/socket.cpp)
+target_include_directories(socket PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+ament_target_dependencies(socket rclcpp)
 
-# Bibliothekstargets hinzufügen
-add_library(plc_connection_lib
-  src/plc_connection_lib.cpp
+# --- Library: udp_socket ---
+add_library(udp_socket src/network/udp/udp_socket.cpp)
+target_include_directories(udp_socket PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
 )
-add_library(udp_socket
-  src/network/udp/udp_socket.cpp
-)
-add_library(socket
-  src/network/socket/socket.cpp
-)
+target_link_libraries(udp_socket socket)
+ament_target_dependencies(udp_socket rclcpp)
 
-# Ausführbares Target hinzufügen
+# --- Library: plc_connection_lib ---
+add_library(plc_connection_lib src/plc_connection_lib.cpp)
+target_include_directories(plc_connection_lib PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+target_link_libraries(plc_connection_lib socket udp_socket)
+ament_target_dependencies(plc_connection_lib rclcpp base tf2 tf2_ros std_msgs geometry_msgs)
+
+# 4. Executable (Node)
 add_executable(${PROJECT_NAME}_node src/${PROJECT_NAME}_node.cpp)
-
-# Abhängigkeiten zur socket-Bibliothek verlinken
-target_link_libraries(socket
-  rclcpp::rclcpp
-)
-
-# Abhängigkeiten zur udp_socket-Bibliothek verlinken
-target_link_libraries(udp_socket
-  rclcpp::rclcpp
-  socket
-)
-
-# Abhängigkeiten zur plc_connection_lib-Bibliothek verlinken
-target_link_libraries(plc_connection_lib
-  rclcpp::rclcpp
-  socket
-  udp_socket
-)
-
-# Abhängigkeiten zum ausführbaren Target verlinken
-target_link_libraries(${PROJECT_NAME}_node
-  rclcpp::rclcpp
-  udp_socket
-  socket
-  plc_connection_lib
-)
-
-# Paketabhängigkeiten für das ausführbare Target angeben
+target_link_libraries(${PROJECT_NAME}_node plc_connection_lib) # Zieht socket/udp_socket automatisch mit
 ament_target_dependencies(${PROJECT_NAME}_node rclcpp base tf2 tf2_ros std_msgs geometry_msgs)
 
-# ROSIDL-Schnittstellen für Bibliotheken angeben
-rosidl_target_interfaces(plc_connection_lib
-  plc_connection "rosidl_typesupport_cpp"
+# 5. Interface Verknüpfung (WICHTIG für .srv Dateien)
+rosidl_target_interfaces(plc_connection_lib ${PROJECT_NAME} "rosidl_typesupport_cpp")
+rosidl_target_interfaces(${PROJECT_NAME}_node ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
+# 6. Exporte für andere Pakete
+ament_export_include_directories(include)
+ament_export_libraries(socket udp_socket plc_connection_lib)
+ament_export_dependencies(rclcpp base rosidl_default_runtime)
+
+# 7. Installation
+# Bibliotheken installieren
+install(TARGETS socket udp_socket plc_connection_lib
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
 )
 
-rosidl_target_interfaces(${PROJECT_NAME}_node
-  ${PROJECT_NAME} "rosidl_typesupport_cpp"
-)
-
-rosidl_target_interfaces(socket
-  plc_connection "rosidl_typesupport_cpp"
-)
-
-rosidl_target_interfaces(udp_socket
-  plc_connection "rosidl_typesupport_cpp"
-)
-
-# Installationsziele für das ausführbare Target hinzufügen
-install(TARGETS
-  ${PROJECT_NAME}_node
+# Node installieren
+install(TARGETS ${PROJECT_NAME}_node
   DESTINATION lib/${PROJECT_NAME}
 )
 
-# Installationsziele für das Launch-Verzeichnis hinzufügen
-install(DIRECTORY
-  launch
-  DESTINATION share/${PROJECT_NAME}
-)
+# Verzeichnisse installieren
+install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY include/ DESTINATION include)
 
-# Installationsziele für das Include-Verzeichnis hinzufügen
-install(
-  DIRECTORY include/
-  DESTINATION include
-)
-
-# Paket exportieren
 ament_package()
