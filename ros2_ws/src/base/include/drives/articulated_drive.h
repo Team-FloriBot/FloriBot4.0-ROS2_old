@@ -42,7 +42,6 @@ class ArticulatedDrive
         geometry_msgs::msg::Twist Speed_;
         rclcpp::Time TimeStamp_;
         double axesLength_, wheelDiameter_, wheelCircumference_, wheelRadius_, frontLength_, rearLength_;
-, ;
         double targetSpeed_, targetOmega_;
         
 };
