@@ -10,6 +10,7 @@
 #include <base/msg/angle.hpp>
 #include <nav_msgs/msg/odometry.hpp>
 #include <base/msg/wheels.hpp>
+#include <sensor_msgs/msg/joint_state.hpp>
 
 // KinematicsPublisher Node
 class KinematicsPublisher : public rclcpp::Node  
@@ -34,6 +35,7 @@ private:
     rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr OdometryPublisher_;
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr CmdVelSubscriber_;
     rclcpp::Subscription<base::msg::Wheels>::SharedPtr SpeedSubscriber_;
+    rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr AngleSubs_;
 
     std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadaster_;
     double AxesLength_, WheelDiameter_;

@@ -166,11 +166,3 @@ void KinematicsPublisher::AngleCallback(const sensor_msgs::msg::JointState::Shar
         angle_ = msg->position[0];
     }
 }
-
-// Membervariablen
-rclcpp::Publisher<base::msg::Wheels>::SharedPtr ActualSpeed_;
-rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr AngleSubs_;
-std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadaster_;
-geometry_msgs::msg::TransformStamped TFAngleMsg_;
-base::msg::Wheels Wheels_actual_;
-};
