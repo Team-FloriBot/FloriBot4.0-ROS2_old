@@ -76,8 +76,8 @@ void KinematicsPublisher::createPublisherSubscriber()
     SpeedSubscriber_ = this->create_subscription<base::msg::Wheels>(
         "engine/actualSpeed", 1, std::bind(&KinematicsPublisher::SpeedCallback, this, std::placeholders::_1));
     // Subscriber für joint_states erstellen
-    AngleSubs_ = this->create_subscription<sensor_msgs::msg::JointState>(
-    "/sensors/bodyAngle", 10, std::bind(&KinematicsPublisher::AngleCallback, this, std::placeholders::_1));
+    AngleSubs_ = this->create_subscription<base::msg::Angle>(
+        "/sensors/bodyAngle", 10, std::bind(&KinematicsPublisher::AngleCallback, this, std::placeholders::_1));
 }
 
 // CmdVel Subscriber
@@ -158,11 +158,11 @@ void KinematicsPublisher::SpeedCallback(const base::msg::Wheels::SharedPtr msg)
     tf_broadaster_->sendTransform(Transform);
 }
 
-void KinematicsPublisher::AngleCallback(const sensor_msgs::msg::JointState::SharedPtr msg)
+void KinematicsPublisher::AngleCallback(const base::msg::Angle::SharedPtr msg)
 {
-    if (!msg->position.empty())
+    if (!msg->angle.empty())
     {
         // Quaternion aus der Gelenkposition berechnen (hier RPY)
-        angle_ = msg->position[0];
+        angle_ = msg->angle;
     }
 }
