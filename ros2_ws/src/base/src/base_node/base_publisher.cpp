@@ -160,9 +160,7 @@ void KinematicsPublisher::SpeedCallback(const base::msg::Wheels::SharedPtr msg)
 
 void KinematicsPublisher::AngleCallback(const base::msg::Angle::SharedPtr msg)
 {
-    if (!msg->angle.empty())
-    {
-        // Quaternion aus der Gelenkposition berechnen (hier RPY)
-        angle_ = msg->angle;
-    }
+
+    angle_ = msg->angle;
+    
 }
