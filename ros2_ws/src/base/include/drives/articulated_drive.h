@@ -25,7 +25,7 @@ class ArticulatedDrive
 {
     public:
         ArticulatedDrive();
-        ArticulatedDrive(double axesLength, double wheelDiameter);
+        ArticulatedDrive(double axesLength, double wheelDiameter, double frontLength, double rearLength);
         ~ArticulatedDrive();
 
         articulatedWheelSpeed inverseKinematics(geometry_msgs::msg::Twist cmdVelMsg, double angle);
