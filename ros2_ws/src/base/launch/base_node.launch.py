@@ -22,6 +22,8 @@ def generate_launch_description():
         parameters=[{
             'wheelDiameter': LaunchConfiguration('wheelDiameter'),
             'axesLength': LaunchConfiguration('axesLength'),
+            'frontLength': LaunchConfiguration('frontLength'),
+            'rearLength': LaunchConfiguration('rearLength'),
             'use_sim_time': False
         }]
     )
