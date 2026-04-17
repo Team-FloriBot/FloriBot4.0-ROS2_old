@@ -7,7 +7,7 @@ def generate_launch_description():
     # 1. Definition der Argumente (Zentrale Stelle für Messwerte)
     front_length_arg = DeclareLaunchArgument('frontLength', default_value='0.38')
     rear_length_arg = DeclareLaunchArgument('rearLength', default_value='0.38')
-    wheel_diameter_arg = DeclareLaunchArgument('wheelDiameter', default_value='0.28') # Durchmesser in Meter
+    wheel_diameter_arg = DeclareLaunchArgument('wheelDiameter', default_value='0.27') # Durchmesser in Meter
     axes_length_arg = DeclareLaunchArgument('axesLength', default_value='0.335')     # Spurweite/Achsabstand
     front_laser_arg = DeclareLaunchArgument('frontLaserLength', default_value='0.387')
     rear_laser_arg = DeclareLaunchArgument('rearLaserLength', default_value='-0.387')
