@@ -34,6 +34,7 @@ articulatedWheelSpeed ArticulatedDrive::inverseKinematics(geometry_msgs::msg::Tw
     targetOmega_ = cmdVelMsg.angular.z;
 
     // winkel muss invertiert werdem
+    angle = -angle;
 
     if (targetSpeed_ >= 0)
     {
