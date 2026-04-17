@@ -42,16 +42,16 @@ articulatedWheelSpeed ArticulatedDrive::inverseKinematics(geometry_msgs::msg::Tw
         angle = -angle;
         retVal.Front.leftWheel  = (1.0/wheelRadius_) * targetSpeed_ - (axesLength_/(2*wheelRadius_))* targetOmega_;
         retVal.Front.rightWheel = (1.0/wheelRadius_) * targetSpeed_ + (axesLength_/(2*wheelRadius_))* targetOmega_;
-        retVal.Rear.leftWheel = (cos(angle)/wheelRadius_ - (axesLength_ * sin(angle))/(frontLength_ * wheelRadius_)) * targetSpeed_ + ((frontLength_*sin(angle) / (2*wheelRadius_))+ (axesLength_ * cos(angle))/(2*wheelRadius_)) * targetOmega_;
-        retVal.Rear.rightWheel= (cos(angle)/wheelRadius_ + (axesLength_ * sin(angle))/(frontLength_ * wheelRadius_)) * targetSpeed_ + ((frontLength_*sin(angle) / (2*wheelRadius_))- (axesLength_ * cos(angle))/(2*wheelRadius_)) * targetOmega_;
+        retVal.Rear.leftWheel = (cos(angle)/wheelRadius_ - (axesLength_ * sin(angle))/(wheelBase_ * wheelRadius_)) * targetSpeed_ + ((wheelBase_*sin(angle) / (2*wheelRadius_))+ (axesLength_ * cos(angle))/(2*wheelRadius_)) * targetOmega_;
+        retVal.Rear.rightWheel= (cos(angle)/wheelRadius_ + (axesLength_ * sin(angle))/(wheelBase_ * wheelRadius_)) * targetSpeed_ + ((wheelBase_*sin(angle) / (2*wheelRadius_))- (axesLength_ * cos(angle))/(2*wheelRadius_)) * targetOmega_;
         
     }
 
     else
     {
         targetOmega_ = -targetOmega_;
-        retVal.Front.leftWheel = (cos(angle)/wheelRadius_ + (axesLength_ * sin(angle))/(frontLength_ * wheelRadius_)) * targetSpeed_ + ((frontLength_*sin(angle) / (2*wheelRadius_))- (axesLength_ * cos(angle))/(2*wheelRadius_)) * targetOmega_;
-        retVal.Front.rightWheel= (cos(angle)/wheelRadius_ - (axesLength_ * sin(angle))/(frontLength_ * wheelRadius_)) * targetSpeed_ + ((frontLength_*sin(angle) / (2*wheelRadius_))+ (axesLength_ * cos(angle))/(2*wheelRadius_)) * targetOmega_;
+        retVal.Front.leftWheel = (cos(angle)/wheelRadius_ + (axesLength_ * sin(angle))/(wheelBase_ * wheelRadius_)) * targetSpeed_ + ((wheelBase_*sin(angle) / (2*wheelRadius_))- (axesLength_ * cos(angle))/(2*wheelRadius_)) * targetOmega_;
+        retVal.Front.rightWheel= (cos(angle)/wheelRadius_ - (axesLength_ * sin(angle))/(wheelBase_ * wheelRadius_)) * targetSpeed_ + ((wheelBase_*sin(angle) / (2*wheelRadius_))+ (axesLength_ * cos(angle))/(2*wheelRadius_)) * targetOmega_;
         retVal.Rear.leftWheel =  (1.0/wheelRadius_) * targetSpeed_ + (axesLength_/(2*wheelRadius_))* targetOmega_;
         retVal.Rear.rightWheel = (1.0/wheelRadius_) * targetSpeed_ - (axesLength_/(2*wheelRadius_))* targetOmega_;
     }
@@ -89,6 +89,7 @@ void ArticulatedDrive::setParam(double AxesLength, double WheelDiameter, double 
         wheelCircumference_ = 2.0 * M_PI * wheelDiameter_ / 2.0;
         frontLength_ = frontLength;
         rearLength_ = rearLength;
+        wheelBase_ = frontLength + rearLength;
 }
 
 void ArticulatedDrive::reset()

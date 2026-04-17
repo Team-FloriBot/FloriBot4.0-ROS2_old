@@ -41,7 +41,7 @@ class ArticulatedDrive
         DifferentialWheelSpeed WheelSpeed_;
         geometry_msgs::msg::Twist Speed_;
         rclcpp::Time TimeStamp_;
-        double axesLength_, wheelDiameter_, wheelCircumference_, wheelRadius_, frontLength_, rearLength_;
+        double axesLength_, wheelDiameter_, wheelCircumference_, wheelRadius_, frontLength_, rearLength_, wheelBase_;
         double targetSpeed_, targetOmega_;
         
 };
